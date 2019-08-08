@@ -12,17 +12,24 @@ public class Robot : MonoBehaviour {
     public float fireRate = 0.2f;
     private bool canShoot = true;
 
+    public Transform foot;
+    public float collisionRadius = 0.2f;
+    public LayerMask groundLayer;
+
     private Vector2 direction = Vector2.zero;
     private Rigidbody2D rb2d;
 
-    private bool onFloor = true;
+    private bool onFloor = false;
     private bool jump = false;
-    
+    private bool isJumping = false;
+
+    Animator anim;
+
 
     private void Start() 
     {
         rb2d = GetComponent<Rigidbody2D>();  
-        StartCoroutine(Example());      
+        anim = GetComponentInChildren<Animator>();  
     }
 
     private void Update() 
@@ -32,6 +39,12 @@ public class Robot : MonoBehaviour {
 
         if (Input.GetButton("Shoot") && canShoot)
             StartCoroutine(Shoot());
+
+        GroundCheck();
+
+        anim.SetBool("jumping", !onFloor);
+        anim.SetBool("shooting", Input.GetButton("Shoot"));
+        anim.SetBool("running", Input.GetAxisRaw("Horizontal") != 0);
     }
 
     private void FixedUpdate() 
@@ -49,27 +62,42 @@ public class Robot : MonoBehaviour {
     {        
         if (move > 0)
             direction = Vector2.right;
-        else if (move < 0)
+        if (move < 0)
             direction = Vector2.left;
-        else
-            direction = Vector2.zero;
 
         transform.right = direction;
-        rb2d.velocity = new Vector2(direction.x * speed, rb2d.velocity.y);  
+
+        if (move == 0)
+            rb2d.velocity = new Vector2(0, rb2d.velocity.y);
+        else
+            rb2d.velocity = new Vector2(direction.x * speed, rb2d.velocity.y);  
     }
 
-    IEnumerator Example()
+    void GroundCheck()
     {
-        print(Time.time);
-        yield return new WaitForSeconds(5);
-        print(Time.time);
+        if (rb2d.velocity.y > 0.1f && !onFloor)
+            isJumping = true;
+        else
+            isJumping = false;
+
+        onFloor = !isJumping && Physics2D.OverlapCircle((Vector2)foot.position, collisionRadius, groundLayer);
+
     }
 
-    IEnumerator Shoot() 
+    IEnumerator Shoot()
     {
         canShoot = false;
         Instantiate(shot, spawnShot.position, transform.rotation);
         yield return new WaitForSeconds(fireRate);
-        canShoot = true;        
+        canShoot = true;
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;        
+        Gizmos.DrawWireSphere((Vector2)foot.position, collisionRadius);
+
+    }
+
+ 
 }
