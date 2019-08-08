@@ -5,12 +5,14 @@ public class Robot : MonoBehaviour {
     
     public float speed = 7f;
     public float jumpForce = 12f;
+    public int health = 3;
 
     public Shot shot;
     public Transform spawnShot;
 
     public float fireRate = 0.2f;
     private bool canShoot = true;
+    private bool canTakeDamage = true;
 
     public Transform foot;
     public float collisionRadius = 0.2f;
@@ -90,6 +92,27 @@ public class Robot : MonoBehaviour {
         Instantiate(shot, spawnShot.position, transform.rotation);
         yield return new WaitForSeconds(fireRate);
         canShoot = true;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (canTakeDamage && health > 0)
+        {
+            canTakeDamage = false;
+            health -= damage;
+            //damageEffect.SetFlashDamage();           
+            Invoke("SetCanTakeDamage", 1.5f);
+        }
+
+        if (health <= 0)
+        {
+            //Destroy(gameObject);
+            //Die
+        }
+    }
+
+    void SetCanTakeDamage() {
+        canTakeDamage = true;
     }
 
     private void OnDrawGizmos()

@@ -131,6 +131,9 @@ GameObject:
   - component: {fileID: 133760504}
   - component: {fileID: 133760506}
   - component: {fileID: 133760505}
+  - component: {fileID: 133760509}
+  - component: {fileID: 133760508}
+  - component: {fileID: 133760507}
   m_Layer: 0
   m_Name: EnemyAnimation
   m_TagString: Untagged
@@ -220,6 +223,62 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &133760507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133760503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8224265831cd72341abf263917863413, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 0
+  collisionRadius: 0.55
+  health: 2
+  explosion: {fileID: 0}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!58 &133760508
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133760503}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.10339928}
+  serializedVersion: 2
+  m_Radius: 0.5638814
+--- !u!50 &133760509
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133760503}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &278747672
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,6 +715,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 7
   jumpForce: 12
+  health: 3
   shot: {fileID: 369461769354107920, guid: 9f2a7d33e36759343a48c4084aee1aa5, type: 3}
   spawnShot: {fileID: 477362312}
   fireRate: 0.3
