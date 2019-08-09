@@ -21,6 +21,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.x < playerTransform.position.x)
+            transform.right = Vector2.left;
+        else
+            transform.right = Vector2.right;
+
         transform.position = Vector2.MoveTowards(transform.position, playerTransform.position, speed * Time.deltaTime);
 
         if (health == 0) {
