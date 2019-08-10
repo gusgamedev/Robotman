@@ -28,10 +28,18 @@ public class Enemy : MonoBehaviour
 
         transform.position = Vector2.MoveTowards(transform.position, playerTransform.position, speed * Time.deltaTime);
 
-        if (health == 0) {
+        float distance = Vector2.Distance(transform.position, playerTransform.position);
+
+        PlayerCollision();
+
+        if (health == 0)
+        {
             Instantiate(explosion, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
+
+        if (distance > 18f)
+            Destroy(gameObject);
     }
 
     public void TakeDamage(int damageValue)
@@ -51,6 +59,8 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+
+    
 
     private void OnDrawGizmos()
     {

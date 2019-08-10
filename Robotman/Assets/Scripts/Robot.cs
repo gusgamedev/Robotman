@@ -5,7 +5,7 @@ public class Robot : MonoBehaviour {
     
     public float speed = 7f;
     public float jumpForce = 12f;
-    public int health = 3;
+    public int health = 1;
 
     public Shot shot;
     public Transform spawnShot;
@@ -24,6 +24,7 @@ public class Robot : MonoBehaviour {
     private bool onFloor = false;
     private bool jump = false;
     private bool isJumping = false;
+    private AudioSource jumpFx;
 
     Animator anim;
 
@@ -32,12 +33,16 @@ public class Robot : MonoBehaviour {
     {
         rb2d = GetComponent<Rigidbody2D>();  
         anim = GetComponentInChildren<Animator>();  
+        jumpFx = GetComponent<AudioSource>();
     }
 
     private void Update() 
-    {        
-        if (Input.GetButtonDown("Jump") &&  onFloor)
-            jump = true; 
+    {
+        if (health <= 0)
+            return;
+        
+        if (Input.GetButtonDown("Jump") && onFloor)
+            jump = true;
 
         if (Input.GetButton("Shoot") && canShoot)
             StartCoroutine(Shoot());
@@ -47,17 +52,23 @@ public class Robot : MonoBehaviour {
         anim.SetBool("jumping", !onFloor);
         anim.SetBool("shooting", Input.GetButton("Shoot"));
         anim.SetBool("running", Input.GetAxisRaw("Horizontal") != 0);
+            
     }
 
     private void FixedUpdate() 
-    {    
-        Move( Input.GetAxisRaw("Horizontal") );      
+    {
+        if (health <= 0)
+            return;
+        
+        Move(Input.GetAxisRaw("Horizontal"));
 
         if (jump)
         {
             jump = false;
+            jumpFx.Play();
             rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce);
-        }              
+        }
+         
     }
 
     private void Move(float move)
@@ -106,14 +117,24 @@ public class Robot : MonoBehaviour {
 
         if (health <= 0)
         {
-            //Destroy(gameObject);
-            //Die
+            anim.SetTrigger("die");
+            rb2d.bodyType = RigidbodyType2D.Static;
+            Level.instance.LevelFailed();
+            
+
         }
     }
 
     void SetCanTakeDamage() {
         canTakeDamage = true;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Death"))
+            TakeDamage(health);
+    }
+
 
     private void OnDrawGizmos()
     {
